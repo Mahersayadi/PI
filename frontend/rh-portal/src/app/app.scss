@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #e8ecf6;
+  color: #1f2933;
+  font-family: 'Inter', 'Roboto', sans-serif;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  background: linear-gradient(180deg, #f5f7fb 0%, #ffffff 100%);
+}
+
+.app-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+
+main {
+  flex: 1;
+  min-height: 100%;
+}

@@ -1,0 +1,105 @@
+<div class="page-header">
+  <h1>Gestion des congés</h1>
+  <p>Suivi centralisé des demandes issues du microservice congé.</p>
+</div>
+
+<mat-card class="filters-card">
+  <div class="filters-grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Recherche</mat-label>
+      <input
+        matInput
+        placeholder="Nom ou type de congé"
+        type="search"
+        [formControl]="searchControl"
+      />
+      <button *ngIf="searchControl.value" matSuffix mat-icon-button (click)="searchControl.setValue('')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-button-toggle-group [formControl]="statusControl" class="status-toggle" exclusive>
+      <mat-button-toggle value="ALL">Tous</mat-button-toggle>
+      <mat-button-toggle value="EN_ATTENTE">En attente</mat-button-toggle>
+      <mat-button-toggle value="APPROUVE">Approuvés</mat-button-toggle>
+      <mat-button-toggle value="REFUSE">Refusés</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <button mat-stroked-button color="primary" type="button" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Actualiser
+    </button>
+  </div>
+</mat-card>
+
+<mat-card class="table-card">
+  <div class="loading-state" *ngIf="isLoading(); else tableBlock">
+    <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+    <span>Chargement des demandes...</span>
+  </div>
+
+  <ng-template #tableBlock>
+    <table mat-table [dataSource]="filteredConges()" class="conges-table" *ngIf="filteredConges().length; else emptyState">
+      <ng-container matColumnDef="employee">
+        <th mat-header-cell *matHeaderCellDef>Collaborateur</th>
+        <td mat-cell *matCellDef="let conge">
+          <div class="employee">
+            <span class="avatar">{{ conge.employeeNom?.[0] || '?' }}</span>
+            <div>
+              <p class="name">{{ conge.employeeNom }}</p>
+              <p class="meta">#{{ conge.employeeId }}</p>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let conge">{{ conge.typeConge }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dates">
+        <th mat-header-cell *matHeaderCellDef>Période</th>
+        <td mat-cell *matCellDef="let conge">
+          {{ conge.dateDebut | date: 'dd/MM/yyyy' }} → {{ conge.dateFin | date: 'dd/MM/yyyy' }}
+          <span class="days">({{ conge.nombreJours }} jours)</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Statut</th>
+        <td mat-cell *matCellDef="let conge">
+          <mat-chip-set aria-label="Statut du congé">
+            <mat-chip [color]="conge.statut === 'APPROUVE' ? 'primary' : conge.statut === 'REFUSE' ? 'warn' : undefined">
+              {{ conge.statut | titlecase }}
+            </mat-chip>
+          </mat-chip-set>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let conge">
+          <button mat-icon-button color="warn" (click)="onDelete(conge)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackById"></tr>
+    </table>
+  </ng-template>
+</mat-card>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <mat-icon>event_busy</mat-icon>
+    <p>Aucune demande correspondant à votre filtre.</p>
+  </div>
+</ng-template>
+
+<div class="error-banner" *ngIf="error()">
+  <mat-icon>error_outline</mat-icon>
+  {{ error() }}
+</div>

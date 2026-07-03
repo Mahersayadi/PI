@@ -1,0 +1,142 @@
+:host {
+  display: block;
+  padding: 2rem;
+  background: #f6f8fb;
+  min-height: 100%;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a237e;
+  }
+
+  p {
+    margin: 0.35rem 0 0;
+    color: #607d8b;
+  }
+}
+
+.filters-card {
+  margin-bottom: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 30px 60px -45px rgba(26, 35, 126, 0.3);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items: center;
+}
+
+.status-toggle {
+  display: inline-flex;
+  border-radius: 12px;
+  background: rgba(63, 81, 181, 0.08);
+
+  .mat-button-toggle-checked {
+    background: #1a237e;
+    color: #fff;
+  }
+}
+
+.table-card {
+  border-radius: 16px;
+  box-shadow: 0 35px 70px -55px rgba(26, 35, 126, 0.35);
+  overflow-x: auto;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #607d8b;
+}
+
+.conges-table {
+  width: 100%;
+
+  th {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #607d8b;
+  }
+
+  td {
+    padding: 1rem;
+  }
+}
+
+.employee {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(63, 81, 181, 0.15);
+    color: #1a237e;
+    font-weight: 600;
+  }
+
+  .name {
+    margin: 0;
+    font-weight: 600;
+    color: #263238;
+  }
+
+  .meta {
+    margin: 0;
+    color: #78909c;
+    font-size: 0.8rem;
+  }
+}
+
+.days {
+  margin-left: 0.5rem;
+  color: #78909c;
+  font-size: 0.85rem;
+}
+
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #90a4ae;
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.error-banner {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(211, 47, 47, 0.08);
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  color: #b71c1c;
+}
+
+@media (max-width: 768px) {
+  :host {
+    padding: 1.25rem;
+  }
+}

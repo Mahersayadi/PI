@@ -1,0 +1,64 @@
+<div class="profile" *ngIf="!isLoading(); else loading">
+  <mat-card class="profile-header" *ngIf="employee() as profil">
+    <div class="avatar">{{ profil.firstName[0] }}{{ profil.lastName[0] }}</div>
+    <div class="details">
+      <h1>{{ profil.firstName }} {{ profil.lastName }}</h1>
+      <p>{{ profil.position }} • {{ profil.departmentName || 'Département non renseigné' }}</p>
+      <p>En poste depuis le {{ profil.hireDate | date: 'dd MMMM yyyy' }}</p>
+    </div>
+    <button mat-stroked-button color="primary" type="button" (click)="editProfile()">
+      <mat-icon>edit</mat-icon>
+      Modifier
+    </button>
+  </mat-card>
+
+  <section class="profile-grid">
+    <mat-card>
+      <h2>Informations professionnelles</h2>
+      <ul *ngIf="employee() as profil">
+        <li><span>Email</span><strong>{{ profil.email }}</strong></li>
+        <li><span>Département</span><strong>{{ profil.departmentName || '—' }}</strong></li>
+        <li><span>Date d'embauche</span><strong>{{ profil.hireDate | date: 'dd/MM/yyyy' }}</strong></li>
+      </ul>
+    </mat-card>
+
+    <mat-card>
+      <h2>Rémunération</h2>
+      <ng-container *ngIf="salaire(); else noSalary">
+        <p>Salaire de base : {{ salaire()?.salaireBase | number: '1.0-0' }} FCFA</p>
+        <p>Primes : {{ salaire()?.primes | number: '1.0-0' }} FCFA</p>
+        <p>Déductions : {{ salaire()?.deductions | number: '1.0-0' }} FCFA</p>
+      </ng-container>
+    </mat-card>
+  </section>
+
+  <mat-card class="history-card" *ngIf="positionHistory().length">
+    <h2>Historique des mobilités</h2>
+    <div class="history-item" *ngFor="let item of positionHistory()">
+      <div>
+        <strong>{{ item.newPosition }}</strong>
+        <span>{{ item.newDepartmentName }}</span>
+      </div>
+      <div class="meta">
+        <span>{{ item.changeDate | date: 'MMMM yyyy' }}</span>
+        <small>Précédent : {{ item.previousPosition }} ({{ item.previousDepartmentName }})</small>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+<ng-template #noSalary>
+  <p class="info">Aucun salaire enregistré.</p>
+</ng-template>
+
+<ng-template #loading>
+  <div class="loading-state">
+    <mat-progress-spinner diameter="48" mode="indeterminate"></mat-progress-spinner>
+    <p>Chargement de votre profil...</p>
+  </div>
+</ng-template>
+
+<div class="error-banner" *ngIf="error()">
+  <mat-icon>error_outline</mat-icon>
+  {{ error() }}
+</div>

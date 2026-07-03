@@ -1,0 +1,60 @@
+<div class="mes-paie" *ngIf="!isLoading(); else loading">
+  <header>
+    <h1>Mes bulletins de paie</h1>
+    <p>Accédez à l'historique de vos fiches et à vos éléments de rémunération.</p>
+  </header>
+
+  <section class="salary-summary" *ngIf="salaire(); else noSalary">
+    <mat-card>
+      <mat-icon>payments</mat-icon>
+      <div>
+        <p>Salaire de base</p>
+        <strong>{{ salaire()?.salaireBase | number: '1.0-0' }} FCFA</strong>
+      </div>
+    </mat-card>
+    <mat-card>
+      <mat-icon>card_giftcard</mat-icon>
+      <div>
+        <p>Primes</p>
+        <strong>{{ salaire()?.primes | number: '1.0-0' }} FCFA</strong>
+      </div>
+    </mat-card>
+    <mat-card>
+      <mat-icon>remove_circle_outline</mat-icon>
+      <div>
+        <p>Déductions</p>
+        <strong>{{ salaire()?.deductions | number: '1.0-0' }} FCFA</strong>
+      </div>
+    </mat-card>
+  </section>
+
+  <ng-template #noSalary>
+    <p class="info">Aucun salaire de référence n'est disponible pour le moment.</p>
+  </ng-template>
+
+  <section class="payslip-list">
+    <mat-card class="payslip-card" *ngFor="let fiche of fichesPaie(); trackBy: trackById">
+      <div>
+        <h3>{{ fiche.periodePaie | date: 'MMMM yyyy' }}</h3>
+        <p>Net à payer : {{ fiche.salaireNet | number: '1.0-0' }} FCFA</p>
+      </div>
+      <button mat-stroked-button color="primary" type="button" (click)="downloadPayslip(fiche)">
+        <mat-icon>download</mat-icon>
+        Télécharger
+      </button>
+    </mat-card>
+    <p class="info" *ngIf="!fichesPaie().length">Aucune fiche de paie enregistrée.</p>
+  </section>
+</div>
+
+<ng-template #loading>
+  <div class="loading-state">
+    <mat-progress-spinner diameter="48" mode="indeterminate"></mat-progress-spinner>
+    <p>Chargement de vos bulletins...</p>
+  </div>
+</ng-template>
+
+<div class="error-banner" *ngIf="error()">
+  <mat-icon>error_outline</mat-icon>
+  {{ error() }}
+</div>

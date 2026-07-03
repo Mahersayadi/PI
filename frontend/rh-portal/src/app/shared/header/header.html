@@ -1,0 +1,45 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <div class="brand">
+    <mat-icon>workspace_premium</mat-icon>
+    <span>RH Portal</span>
+  </div>
+
+  <span class="spacer"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="notificationsMenu" aria-label="Notifications">
+    <mat-icon>notifications</mat-icon>
+    <span class="badge" *ngIf="unreadCount() > 0">{{ unreadCount() }}</span>
+  </button>
+
+  <mat-menu #notificationsMenu="matMenu" class="notifications-menu">
+    <div class="notifications-header">
+      <span>Notifications</span>
+      <button mat-button type="button" (click)="markAllAsRead()">Tout marquer comme lu</button>
+    </div>
+    <ng-container *ngIf="notifications().length; else emptyNotifications">
+      <button mat-menu-item *ngFor="let notification of notifications()">
+        <mat-icon>{{ notification.status === 'READ' ? 'drafts' : 'markunread' }}</mat-icon>
+        <div>
+          <span class="title">{{ notification.type }}</span>
+          <small>{{ notification.message }}</small>
+        </div>
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <ng-template #emptyNotifications>
+    <div class="empty-notifications">Aucune notification</div>
+  </ng-template>
+
+  <div class="profile">
+    <div class="avatar">{{ user.firstName[0] }}{{ user.lastName[0] }}</div>
+    <div class="info">
+      <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+      <span>{{ user.role === 'ADMIN' ? 'Administrateur' : 'Employé' }}</span>
+    </div>
+    <button mat-button type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Déconnexion
+    </button>
+  </div>
+</mat-toolbar>

@@ -1,0 +1,239 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: smarttalent-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: smarttalent_db
+      MYSQL_USER: employee_user
+      MYSQL_PASSWORD: motdepasse123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - smarttalent-network
+
+  # Eureka Discovery Server
+  discovery-server:
+    image: smarttalent-discovery-server:latest
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_APPLICATION_NAME: discovery-server
+    depends_on:
+      - mysql
+    networks:
+      - smarttalent-network
+
+  # Config Server
+  config-server:
+    image: smarttalent-config-server:latest
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_APPLICATION_NAME: config-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+    depends_on:
+      - discovery-server
+    networks:
+      - smarttalent-network
+
+  # API Gateway
+  gateway-server:
+    image: smarttalent-gateway-server:latest
+    container_name: gateway-server
+    ports:
+      - "8100:8080"
+    environment:
+      SPRING_APPLICATION_NAME: gateway-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+      JWT_SECRET: myverysecretkey1234567890
+    depends_on:
+      - discovery-server
+      - config-server
+    networks:
+      - smarttalent-network
+
+  # Auth Service
+  auth-service:
+    image: smarttalent-auth-service:latest
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: auth-service
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/auth_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: employee_user
+      SPRING_DATASOURCE_PASSWORD: motdepasse123
+      JWT_SECRET: myverysecretkey1234567890
+    depends_on:
+      - mysql
+      - discovery-server
+      - config-server
+    networks:
+      - smarttalent-network
+
+  # Employee Service
+  employee-service:
+    image: smarttalent-employee-service:latest
+    container_name: employee-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_APPLICATION_NAME: employee
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employee_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: employee_user
+      SPRING_DATASOURCE_PASSWORD: motdepasse123
+    depends_on:
+      - mysql
+      - discovery-server
+      - config-server
+    networks:
+      - smarttalent-network
+
+  # Conge Service
+  conge-service:
+    image: smarttalent-conge-service:latest
+    container_name: conge-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_APPLICATION_NAME: conge-service
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/conge_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: employee_user
+      SPRING_DATASOURCE_PASSWORD: motdepasse123
+    depends_on:
+      - mysql
+      - discovery-server
+      - config-server
+    networks:
+      - smarttalent-network
+
+  # Paie Service
+  paie-service:
+    image: smarttalent-paie-service:latest
+    container_name: paie-service
+    ports:
+      - "8104:8084"
+    environment:
+      SPRING_APPLICATION_NAME: paie-service
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/paie_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: employee_user
+      SPRING_DATASOURCE_PASSWORD: motdepasse123
+    depends_on:
+      - mysql
+      - discovery-server
+      - config-server
+    networks:
+      - smarttalent-network
+
+  # Notification Service
+  notification-service:
+    image: smarttalent-notification-service:latest
+    container_name: notification-service
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_APPLICATION_NAME: notification-service
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/notification_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: employee_user
+      SPRING_DATASOURCE_PASSWORD: motdepasse123
+    depends_on:
+      - mysql
+      - discovery-server
+      - config-server
+    networks:
+      - smarttalent-network
+
+  # AI Service
+  ai-service:
+    image: smarttalent-ai-service:latest
+    container_name: ai-service
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_APPLICATION_NAME: ai-service
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - discovery-server
+    networks:
+      - smarttalent-network
+
+  # Recruitment Service
+  recruitment-service:
+    image: smarttalent-recruitment-service:latest
+    container_name: recruitment-service
+    ports:
+      - "8107:8087"
+    environment:
+      SPRING_APPLICATION_NAME: recruitment-service
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-server:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/recruitment_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: employee_user
+      SPRING_DATASOURCE_PASSWORD: motdepasse123
+    depends_on:
+      - mysql
+      - discovery-server
+    networks:
+      - smarttalent-network
+
+  # Prometheus for Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - smarttalent-network
+
+  # Grafana for Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - smarttalent-network
+
+volumes:
+  mysql-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  smarttalent-network:
+    driver: bridge

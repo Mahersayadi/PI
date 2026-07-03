@@ -1,0 +1,113 @@
+<div class="page-header">
+  <h1>Collaborateurs</h1>
+  <p>Gérez la base employés synchronisée avec le microservice <code>employee-service</code>.</p>
+</div>
+
+<mat-card class="filters-card">
+  <div class="filters-grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Rechercher</mat-label>
+      <input
+        matInput
+        placeholder="Nom, email ou poste"
+        [formControl]="searchControl"
+        type="search"
+      />
+      <button *ngIf="searchControl.value" matSuffix mat-icon-button aria-label="Effacer" (click)="searchControl.setValue('')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Département</mat-label>
+      <mat-select [formControl]="departmentControl">
+        <mat-option value="ALL">Tous les départements</mat-option>
+        <mat-option *ngFor="let department of departments()" [value]="department.id">
+          {{ department.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" type="button" (click)="onCreate()">
+      <mat-icon>person_add</mat-icon>
+      Nouvel employé
+    </button>
+  </div>
+</mat-card>
+
+<mat-card class="table-card">
+  <div class="loading-state" *ngIf="isLoading(); else dataBlock">
+    <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+    <span>Chargement des collaborateurs...</span>
+  </div>
+
+  <ng-template #dataBlock>
+    <table mat-table [dataSource]="employees()" class="employees-table" *ngIf="employees().length; else emptyState">
+      <ng-container matColumnDef="identity">
+        <th mat-header-cell *matHeaderCellDef>Collaborateur</th>
+        <td mat-cell *matCellDef="let employee">
+          <div class="employee-identity">
+            <span class="avatar">{{ employee.firstName[0] }}{{ employee.lastName[0] }}</span>
+            <div>
+              <p class="name">{{ employee.firstName }} {{ employee.lastName }}</p>
+              <p class="email">{{ employee.email }}</p>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef>Département</th>
+        <td mat-cell *matCellDef="let employee">
+          {{ employee.departmentName || '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>Poste</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.position }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="hireDate">
+        <th mat-header-cell *matHeaderCellDef>Date d'embauche</th>
+        <td mat-cell *matCellDef="let employee">
+          {{ employee.hireDate | date: 'dd/MM/yyyy' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let employee">
+          <div class="actions">
+            <button mat-icon-button color="primary" type="button" (click)="onEdit(employee)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" type="button" (click)="onDelete(employee)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackById"></tr>
+    </table>
+  </ng-template>
+</mat-card>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <mat-icon>group_off</mat-icon>
+    <p>Aucun collaborateur trouvé. Ajustez vos filtres ou ajoutez un employé.</p>
+  </div>
+</ng-template>
+
+<div class="error-banner" *ngIf="error()">
+  <mat-icon>error_outline</mat-icon>
+  {{ error() }}
+</div>

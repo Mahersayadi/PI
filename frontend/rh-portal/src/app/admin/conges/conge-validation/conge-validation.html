@@ -1,0 +1,64 @@
+<div class="page-header">
+  <h1>Validation des congés</h1>
+  <p>Approuvez ou refusez les demandes en attente.</p>
+</div>
+
+<mat-card class="list-card" *ngIf="!isLoading(); else loading">
+  <div *ngIf="pendingConges().length; else emptyState" class="conges-grid">
+    <mat-card class="conge-card" *ngFor="let conge of pendingConges(); trackBy: trackById">
+      <header>
+        <div>
+          <h2>{{ conge.employeeNom }}</h2>
+          <p>{{ conge.typeConge }} • {{ conge.nombreJours }} jours</p>
+        </div>
+        <span class="reference">#{{ conge.id }}</span>
+      </header>
+
+      <section class="details">
+        <div>
+          <mat-icon>event</mat-icon>
+          <span>{{ conge.dateDebut | date: 'dd MMM yyyy' }} → {{ conge.dateFin | date: 'dd MMM yyyy' }}</span>
+        </div>
+        <div>
+          <mat-icon>article</mat-icon>
+          <span>{{ conge.motif || 'Aucun motif fourni' }}</span>
+        </div>
+      </section>
+
+      <mat-form-field appearance="outline" class="comment-field">
+        <mat-label>Commentaire du responsable</mat-label>
+        <textarea matInput [formControl]="commentDrafts()[conge.id]"></textarea>
+      </mat-form-field>
+
+      <div class="actions">
+        <button mat-stroked-button color="warn" type="button" (click)="refuse(conge)">
+          <mat-icon>block</mat-icon>
+          Refuser
+        </button>
+        <button mat-flat-button color="primary" type="button" (click)="approve(conge)">
+          <mat-icon>check</mat-icon>
+          Approuver
+        </button>
+      </div>
+    </mat-card>
+  </div>
+</mat-card>
+
+<ng-template #loading>
+  <div class="loading-state">
+    <mat-progress-spinner diameter="48" mode="indeterminate"></mat-progress-spinner>
+    <p>Chargement des demandes en attente...</p>
+  </div>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <mat-icon>task_alt</mat-icon>
+    <p>Toutes les demandes ont été traitées.</p>
+  </div>
+</ng-template>
+
+<div class="error-banner" *ngIf="error()">
+  <mat-icon>error_outline</mat-icon>
+  {{ error() }}
+</div>

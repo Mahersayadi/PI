@@ -1,0 +1,137 @@
+:host {
+  display: block;
+  padding: 2rem;
+  background: #f6f8fb;
+  min-height: 100%;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a237e;
+  }
+
+  p {
+    margin: 0.35rem 0 0;
+    color: #607d8b;
+  }
+}
+
+.list-card {
+  border-radius: 18px;
+  box-shadow: 0 35px 75px -55px rgba(26, 35, 126, 0.35);
+}
+
+.conges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.conge-card {
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 45px -40px rgba(26, 35, 126, 0.35);
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #1a237e;
+    }
+
+    p {
+      margin: 0.2rem 0 0;
+      color: #607d8b;
+    }
+
+    .reference {
+      font-weight: 600;
+      color: #78909c;
+    }
+  }
+
+  .details {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    div {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #455a64;
+
+      mat-icon {
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+    }
+  }
+
+  .comment-field {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    button mat-icon {
+      margin-right: 0.4rem;
+    }
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 0;
+  color: #607d8b;
+}
+
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #90a4ae;
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.error-banner {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(211, 47, 47, 0.08);
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  color: #b71c1c;
+}
+
+@media (max-width: 768px) {
+  :host {
+    padding: 1.25rem;
+  }
+}

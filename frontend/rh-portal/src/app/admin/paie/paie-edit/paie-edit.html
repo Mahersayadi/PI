@@ -1,0 +1,59 @@
+<div class="page-header">
+  <h1>Mettre à jour la fiche salaire</h1>
+  <p>Saisie des éléments variables synchronisés avec le microservice paie.</p>
+</div>
+
+<mat-card class="form-card" *ngIf="!isLoading(); else loading">
+  <form [formGroup]="salaryForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Collaborateur</mat-label>
+        <mat-select formControlName="employeeId" required>
+          <mat-option *ngFor="let employee of employees()" [value]="employee.id">
+            {{ employee.firstName }} {{ employee.lastName }} ({{ employee.departmentName || '—' }})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Salaire de base</mat-label>
+        <input matInput type="number" min="0" formControlName="salaireBase" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Primes</mat-label>
+        <input matInput type="number" min="0" formControlName="primes" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Déductions</mat-label>
+        <input matInput type="number" min="0" formControlName="deductions" />
+      </mat-form-field>
+    </div>
+
+    <div class="net-preview">
+      <span>Net à payer</span>
+      <strong>{{ netSalaire() | number: '1.0-0' }} FCFA</strong>
+    </div>
+
+    <div class="form-actions">
+      <button mat-stroked-button type="button" routerLink="/admin/paie">Annuler</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting()">
+        <mat-icon>save</mat-icon>
+        Enregistrer
+      </button>
+    </div>
+  </form>
+</mat-card>
+
+<ng-template #loading>
+  <div class="loading-state">
+    <mat-progress-spinner diameter="48" mode="indeterminate"></mat-progress-spinner>
+    <p>Chargement des collaborateurs...</p>
+  </div>
+</ng-template>
+
+<div class="error-banner" *ngIf="error()">
+  <mat-icon>error_outline</mat-icon>
+  {{ error() }}
+</div>

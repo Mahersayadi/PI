@@ -1,0 +1,127 @@
+.app-toolbar {
+  padding: 0 2rem;
+  background: linear-gradient(90deg, #1a237e 0%, #3949ab 100%);
+  color: #fff;
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+
+    mat-icon {
+      font-size: 1.6rem;
+    }
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  button[mat-icon-button] {
+    position: relative;
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #ff7043;
+      color: #fff;
+      border-radius: 999px;
+      padding: 0 6px;
+      font-size: 0.7rem;
+      line-height: 1.6;
+      font-weight: 600;
+    }
+  }
+
+  .notifications-menu {
+    width: 320px;
+
+    .notifications-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+    }
+
+    button[mat-menu-item] {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: start;
+      gap: 0.75rem;
+
+      mat-icon {
+        color: #1a237e;
+      }
+
+      .title {
+        display: block;
+        font-weight: 600;
+      }
+
+      small {
+        display: block;
+        color: #546e7a;
+      }
+    }
+
+    .empty-notifications {
+      padding: 1.5rem;
+      text-align: center;
+      color: #78909c;
+    }
+  }
+
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+
+      strong {
+        font-weight: 600;
+      }
+
+      span {
+        font-size: 0.85rem;
+        opacity: 0.8;
+      }
+    }
+
+    button {
+      color: #fff;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .app-toolbar {
+    padding: 0 1rem;
+
+    .profile {
+      gap: 0.5rem;
+
+      .info {
+        display: none;
+      }
+    }
+  }
+}

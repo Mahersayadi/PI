@@ -1,0 +1,19 @@
+<div class="recruitment">
+  <h2>Offres d'emploi</h2>
+  <ng-container *ngIf="loading">
+    <p>Chargement des offres...</p>
+  </ng-container>
+  <ng-container *ngIf="error">
+    <p class="error">{{ error }}</p>
+  </ng-container>
+  <ul *ngIf="!loading && !error">
+    <li *ngFor="let job of jobs" class="job-card">
+      <h3>{{ job.title }}</h3>
+      <p>{{ job.description }}</p>
+      <p><strong>Localisation :</strong> {{ job.location || 'N/A' }}</p>
+      <p><strong>Type de contrat :</strong> {{ job.contractType || 'N/A' }}</p>
+      <p><strong>Salaire :</strong> {{ job.salaryRange || 'N/A' }}</p>
+      <p><strong>Statut :</strong> {{ job.status || 'OPEN' }}</p>
+    </li>
+  </ul>
+</div>

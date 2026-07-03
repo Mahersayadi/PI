@@ -1,0 +1,74 @@
+<div class="page-header">
+  <h1>Ajouter un collaborateur</h1>
+  <p>Création d'un employé dans le microservice employee-service.</p>
+</div>
+
+<mat-card class="form-card">
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Prénom</mat-label>
+        <input matInput formControlName="firstName" required />
+        <mat-error *ngIf="employeeForm.get('firstName')?.hasError('required')">
+          Le prénom est obligatoire
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nom</mat-label>
+        <input matInput formControlName="lastName" required />
+        <mat-error *ngIf="employeeForm.get('lastName')?.hasError('required')">
+          Le nom est obligatoire
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email professionnel</mat-label>
+        <input matInput type="email" formControlName="email" required />
+        <mat-error *ngIf="employeeForm.get('email')?.hasError('email')">
+          Adresse email invalide
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Poste</mat-label>
+        <input matInput formControlName="position" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Département</mat-label>
+        <mat-select formControlName="departmentId" required>
+          <mat-option *ngFor="let department of departments()" [value]="department.id">
+            {{ department.name }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="!departments().length">Aucun département disponible</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Salaire de base (FCFA)</mat-label>
+        <input matInput type="number" min="0" formControlName="baseSalary" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date d'embauche</mat-label>
+        <input matInput [matDatepicker]="hireDatePicker" formControlName="hireDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="hireDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #hireDatePicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="form-actions">
+      <button mat-stroked-button type="button" routerLink="/admin/employees">Annuler</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting()">
+        <mat-icon>save</mat-icon>
+        Enregistrer
+      </button>
+    </div>
+  </form>
+</mat-card>
+
+<div class="error-banner" *ngIf="error()">
+  <mat-icon>error_outline</mat-icon>
+  {{ error() }}
+</div>

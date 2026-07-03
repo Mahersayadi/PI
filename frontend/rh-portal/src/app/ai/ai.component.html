@@ -1,0 +1,21 @@
+<div class="ai-chat">
+  <h2>Assistant IA</h2>
+
+  <div class="history">
+    <ng-container *ngFor="let entry of chatHistory">
+      <div class="message" [class.user]="entry.role === 'user'" [class.ai]="entry.role === 'ai'">
+        <span class="role">{{ entry.role === 'user' ? 'Vous' : 'IA' }}:</span>
+        <p>{{ entry.content }}</p>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="input-area" *ngIf="!loading">
+    <textarea [(ngModel)]="message" placeholder="Tapez votre question..." rows="2"></textarea>
+    <button (click)="send()" [disabled]="!message.trim()">Envoyer</button>
+  </div>
+
+  <p *ngIf="loading">Envoi en cours…</p>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+</div>
